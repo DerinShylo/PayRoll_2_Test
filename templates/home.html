@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="p-8">
+
+  <div class="grid md:grid-cols-3 gap-8 justify-items-center">
+
+    <!-- Admin Card -->
+    <a href="{{ url_for('routes.role_access', role='admin') }}"
+       class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300">
+      <div class="card-body text-center">
+        <h2 class="card-title text-secondary text-lg">👑 Admin</h2>
+      </div>
+    </a>
+
+    <!-- Accounts Card -->
+    <a href="{{ url_for('routes.role_access', role='accounts') }}"
+       class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300">
+      <div class="card-body text-center">
+        <h2 class="card-title text-secondary text-lg">💼 Accounts</h2>
+      </div>
+    </a>
+
+    <!-- HR Card -->
+    <a href="{{ url_for('routes.role_access', role='hr') }}"
+       class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300">
+      <div class="card-body text-center">
+        <h2 class="card-title text-secondary text-lg">🧍 HR</h2>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+{% endblock %}

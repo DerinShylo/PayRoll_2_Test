@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="p-8">
+  <h1 class="text-4xl font-bold text-primary mb-8 text-center">
+    Welcome, {{ current_user.username|capitalize }}
+  </h1>
+
+  <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 justify-items-center">
+
+    <!-- ===========================
+         SUPER USER: Full Access
+    ============================ -->
+    {% if current_user.is_superuser %}
+      <a href="{{ url_for('routes.new_staff') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">New Staff Entry</h2>
+        </div>
+      </a>
+
+      <a href="{{ url_for('routes.d_r_page') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">Deductions & Reimbursements</h2>
+        </div>
+      </a>
+
+      <a href="{{ url_for('routes.salary_overview') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">Salary Overview</h2>
+        </div>
+      </a>
+
+      <a href="{{ url_for('routes.lop_page') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">LOP Entry</h2>
+        </div>
+      </a>
+
+      <a href="{{ url_for('routes.fixer') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">Adjust Reimbursements</h2>
+        </div>
+      </a>
+
+      <a href="{{ url_for('routes.professional_tax') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">Professional Tax</h2>
+        </div>
+      </a>
+    {% endif %}
+
+
+    <!-- ===========================
+         ADMIN: LOP + Salary Overview
+    ============================ -->
+    {% if current_user.is_admin and not current_user.is_superuser %}
+      <a href="{{ url_for('routes.lop_page') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">LOP Entry</h2>
+        </div>
+      </a>
+
+      <a href="{{ url_for('routes.salary_overview') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">Salary Overview</h2>
+        </div>
+      </a>
+    {% endif %}
+
+
+    <!-- ===========================
+         ACCOUNTS: D/R + Professional Tax
+    ============================ -->
+    {% if current_user.is_accounts and not current_user.is_superuser %}
+      <a href="{{ url_for('routes.d_r_page') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">Deductions & Reimbursements</h2>
+        </div>
+      </a>
+
+      <a href="{{ url_for('routes.professional_tax') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">Professional Tax</h2>
+        </div>
+      </a>
+    {% endif %}
+
+
+    <!-- ===========================
+         HR: New Staff + Fixer
+    ============================ -->
+    {% if current_user.is_hr and not current_user.is_superuser %}
+      <a href="{{ url_for('routes.new_staff') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">New Staff Entry</h2>
+        </div>
+      </a>
+
+      <a href="{{ url_for('routes.fixer') }}" class="card w-64 bg-base-100 shadow-xl hover:shadow-2xl border border-base-300 transition">
+        <div class="card-body text-center">
+          <h2 class="card-title text-secondary">Adjust Reimbursements</h2>
+        </div>
+      </a>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="nord">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title or "PayRoll" }}</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root { --sidebar-width: 16rem; }
+    .app-sidebar {
+      width: var(--sidebar-width);
+      position: fixed;
+      top: 4rem;
+      left: 0;
+      height: calc(100vh - 4rem);
+      background-color: var(--fallback-b1, theme(colors.base-100));
+      border-right: 1px solid var(--fallback-b3, theme(colors.base-300));
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow-y: auto;
+    }
+    .app-main {
+      margin-left: var(--sidebar-width);
+    }
+    @media (max-width: 640px) {
+      :root { --sidebar-width: 13rem; }
+      .app-sidebar { position: static; height: auto; }
+      .app-main { margin-left: 0; }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-base-200 flex flex-col">
+
+  <!-- NAVBAR -->
+  <nav class="navbar bg-base-100 shadow-md px-6 sticky top-0 z-50">
+    <div class="flex items-center justify-between w-full">
+      <div class="flex items-center space-x-3">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="College Logo" class="h-10 w-auto rounded-md">
+        <h1 class="text-xl font-bold text-primary">Madha Engineering College</h1>
+      </div>
+
+      {% if current_user.is_authenticated %}
+      <div>
+        <a href="{{ url_for('routes.logout') }}" class="btn btn-sm btn-outline btn-error flex items-center gap-1">
+          🚪 Logout
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- FLASH MESSAGES (GLOBAL) -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 w-[90%] md:w-[50%] space-y-2">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'success' if category=='success' else 'error' if category=='error' else 'info' if category=='info' else 'warning' }} shadow-lg flex items-center justify-between">
+            <span>{{ message }}</span>
+            <button onclick="this.parentElement.remove()" class="btn btn-sm btn-ghost">✕</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- MAIN WRAPPER -->
+  <div class="flex flex-1 overflow-hidden">
+
+    {% if current_user.is_authenticated and title != 'Home' %}
+    <aside class="app-sidebar">
+      <nav class="p-4">
+        <ul class="menu menu-vertical text-base font-medium space-y-1">
+
+          <!-- Home link (for all authenticated users) -->
+          <li>
+            <a href="{{ url_for('routes.home_page') }}" class="hover:bg-base-200 rounded-lg">
+              🏠 Home
+            </a>
+          </li>
+
+          <!-- ===========================
+               SUPER USER — FULL ACCESS
+          ============================ -->
+          {% if current_user.is_superuser %}
+          <li class="mt-4 opacity-70 font-semibold text-sm tracking-wider">SUPER USER MENU</li>
+          <li><a href="{{ url_for('routes.new_staff') }}">➕ New Staff Entry</a></li>
+          <li><a href="{{ url_for('routes.d_r_page') }}">💰 Deductions & Reimbursements</a></li>
+          <li><a href="{{ url_for('routes.salary_overview') }}">📄 Salary Overview</a></li>
+          <li><a href="{{ url_for('routes.lop_page') }}">🕒 LOP Entry</a></li>
+          <li><a href="{{ url_for('routes.fixer') }}">⚙️ Adjust Reimbursements</a></li>
+          <li><a href="{{ url_for('routes.professional_tax') }}">📊 Professional Tax</a></li>
+          {% endif %}
+
+          <!-- ===========================
+               ADMIN — LOP + SALARY
+          ============================ -->
+          {% if current_user.is_admin and not current_user.is_superuser %}
+          <li class="mt-4 opacity-70 font-semibold text-sm tracking-wider">ADMIN MENU</li>
+          <li><a href="{{ url_for('routes.lop_page') }}">🕒 LOP Entry</a></li>
+          <li><a href="{{ url_for('routes.salary_overview') }}">📄 Salary Overview</a></li>
+          {% endif %}
+
+          <!-- ===========================
+               ACCOUNTS — D/R + TAX
+          ============================ -->
+          {% if current_user.is_accounts and not current_user.is_superuser %}
+          <li class="mt-4 opacity-70 font-semibold text-sm tracking-wider">ACCOUNTS MENU</li>
+          <li><a href="{{ url_for('routes.d_r_page') }}">💰 Deductions & Reimbursements</a></li>
+          <li><a href="{{ url_for('routes.professional_tax') }}">📊 Professional Tax</a></li>
+          {% endif %}
+
+          <!-- ===========================
+               HR — STAFF + FIXER
+          ============================ -->
+          {% if current_user.is_hr and not current_user.is_superuser %}
+          <li class="mt-4 opacity-70 font-semibold text-sm tracking-wider">HR MENU</li>
+          <li><a href="{{ url_for('routes.new_staff') }}">➕ New Staff Entry</a></li>
+          <li><a href="{{ url_for('routes.fixer') }}">⚙️ Adjust Reimbursements</a></li>
+          {% endif %}
+
+        </ul>
+      </nav>
+    </aside>
+    {% endif %}
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main flex-1 p-6 overflow-y-auto mt-4 {% if title == 'Home' %}!ml-0{% endif %}">
+      {% block content %}
+      {% endblock %}
+    </main>
+  </div>
+  <script>
+  // Auto-hide flash messages after 4 seconds
+  setTimeout(() => {
+    document.querySelectorAll('.alert').forEach(alert => {
+      alert.style.transition = 'opacity 0.5s ease';
+      alert.style.opacity = '0';
+      setTimeout(() => alert.remove(), 500);
+    });
+  }, 4000);
+</script>
+
+</body>
+</html>
