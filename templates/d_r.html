@@ -135,9 +135,9 @@
     </section>
     {% endif %}
 {% if result and result.total_manual_deductions %}
-    {% if deductions.professional_tax > 0 %}
+    {% if (deductions|default({})).professional_tax|default(0) > 0 %}
     <div class="alert alert-info text-sm">
-        Professional Tax Applied: ₹{{ deductions.professional_tax }}
+        Professional Tax Applied: ₹{{ (deductions|default({})).professional_tax|default(0) }}
     </div>
     {% endif %}
 {% endif %}
