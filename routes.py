@@ -295,6 +295,8 @@ def d_r_page():
     result = None
     selected_staff_id = None
     selected_month = None
+    
+    deductions = {}
 
     if request.method == 'POST':
         try:
@@ -418,7 +420,8 @@ def d_r_page():
                 staff_list=staff_list,
                 result=result,
                 selected_staff_id=selected_staff_id,
-                selected_month=selected_month
+                selected_month=selected_month,
+                deductions=deductions
             )
 
         except Exception as e:
@@ -430,7 +433,9 @@ def d_r_page():
                            staff_list=staff_list,
                            result=result,
                            selected_staff_id=selected_staff_id,
-                           selected_month=selected_month)
+                           selected_month=selected_month,
+                           deductions=deductions
+                           )
 
 
 # -------------------------
