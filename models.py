@@ -96,6 +96,7 @@ class Staff(db.Model):
 
     base_salary = db.Column(db.Float, nullable=False)
     epf_eligible = db.Column(db.Boolean, default=False)
+    esi_eligible = db.Column(db.Boolean, default=False)
     allowances = db.Column(db.Float, default=0)
     deductions = db.Column(db.Float, default=0)
 
@@ -139,6 +140,7 @@ class SalaryRecord(db.Model):
     uniform = db.Column(db.Float, default=0)
     cd = db.Column(db.Float, default=0)
     hostel = db.Column(db.Float, default=0)
+    suspense = db.Column(db.Float, default=0)
     misc = db.Column(db.Float, default=0)
 
     # Computed fields
