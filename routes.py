@@ -171,6 +171,7 @@ def new_staff():
             designation=request.form['designation'],
             base_salary=float(request.form['base_salary'] or 0),
             epf_eligible = (request.form.get('epf_eligible') == "Yes"),
+            esi_eligible = (request.form.get('esi_eligible') == "Yes"),
             allowances=float(request.form.get('allowances', 0) or 0),
             deductions=float(request.form.get('deductions', 0) or 0),
             date_joined=datetime.strptime(request.form['date_joined'], '%Y-%m-%d'),
@@ -333,6 +334,7 @@ def d_r_page():
                 "uniform": float(request.form.get('uniform', 0)),
                 "cd": float(request.form.get('cd', 0)),
                 "hostel": float(request.form.get('hostel', 0)),
+                "suspense": float(request.form.get('suspense', 0)),
                 "misc": float(request.form.get('misc', 0))
             }
             
@@ -365,7 +367,8 @@ def d_r_page():
                 reimbursements=reimbursements,
                 month=month,
                 year=year,
-                epf_eligible=epf_eligible
+                epf_eligible=staff.epf_eligible,
+                esi_eligible=staff.esi_eligible
             )
 
             # Update or create the final salary record
@@ -403,6 +406,7 @@ def d_r_page():
                     uniform=deductions["uniform"],
                     cd=deductions["cd"],
                     hostel=deductions["hostel"],
+                    suspense=deductions["suspense"],
                     misc=deductions["misc"],
                     total_deductions=result['total_deductions'],
                     total_reimbursements=result['total_reimbursements'],
@@ -473,7 +477,7 @@ def salary_overview():
 @routes.route('/export_salary_excel')
 @login_required
 def export_salary_excel():
-    if not current_user.is_accounts and not current_user.is_admin:
+    if not current_user.is_accounts and not current_user.is_admin and not current_user.is_superuser:
         flash("Access denied: Accounts users only.", "error")
         return redirect(url_for('routes.dashboard'))
 
@@ -502,7 +506,6 @@ def export_salary_excel():
             "Designation": r.staff_ref.designation,
             "Base Pay": r.gross_salary,
             "LOP Days": r.lop_days,
-            "LOP/Day": round(lop_per_day, 2),
             "LOP Amount": r.lop_amount,
             "EPF": r.epf,
             "ESI": r.esi,
@@ -512,6 +515,7 @@ def export_salary_excel():
             "Uniform": r.uniform or 0,
             "CD": r.cd or 0,
             "Hostel": r.hostel or 0,
+            "Suspense": r.suspense or 0,
             "Misc": r.misc or 0,
             "Total Deductions": r.total_deductions,
             "Reimbursements": r.total_reimbursements,
@@ -554,9 +558,9 @@ def export_salary_pdf():
     pdf.set_font('Arial', 'B', 9)
     headers = [
         "Staff ID", "Name", "Dept", "Desig", "Base Pay", "LOP Days", "LOP Amt",
-        "EPF", "ESI", "IT", "Loan", "Adv", "Uniform", "CD", "Hostel", "Misc", "Net Pay"
+        "EPF", "ESI", "IT", "Loan", "Adv", "Uniform", "CD", "Hostel", "Suspense", "Misc", "Net Pay"
     ]
-    col_widths = [18, 30, 25, 25, 20, 20, 20, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22]
+    col_widths = [18, 30, 25, 25, 20, 20, 20, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22]
 
     for i, h in enumerate(headers):
         pdf.cell(col_widths[i], 8, h, border=1, align='C')
@@ -579,8 +583,9 @@ def export_salary_pdf():
         pdf.cell(col_widths[12], 8, f"{r.uniform:.0f}", border=1, align='R')
         pdf.cell(col_widths[13], 8, f"{r.cd:.0f}", border=1, align='R')
         pdf.cell(col_widths[14], 8, f"{r.hostel:.0f}", border=1, align='R')
-        pdf.cell(col_widths[15], 8, f"{r.misc:.0f}", border=1, align='R')
-        pdf.cell(col_widths[16], 8, f"{r.net_salary:.0f}", border=1, align='R')
+        pdf.cell(col_widths[15], 8, f"{r.suspense:.0f}", border=1, align='R')
+        pdf.cell(col_widths[16], 8, f"{r.misc:.0f}", border=1, align='R')
+        pdf.cell(col_widths[17], 8, f"{r.net_salary:.0f}", border=1, align='R')
         pdf.ln()
 
     pdf_bytes = pdf.output(dest='S').encode('latin-1')
