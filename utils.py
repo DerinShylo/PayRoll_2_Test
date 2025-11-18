@@ -11,7 +11,8 @@ def calculate_salary_components(
     reimbursements: List[float],
     month: int,
     year: int,
-    epf_eligible: bool = True
+    epf_eligible: bool = True,
+    esi_eligible: bool = True
 ) -> Dict[str, Any]:
 
     # Defensive safety checks
@@ -43,7 +44,7 @@ def calculate_salary_components(
     adjusted_gross_for_epf_esi = gross_salary - lop_amount_for_epf_esi
 
     epf = math.ceil(adjusted_gross_for_epf_esi * 0.70 * 0.12) if epf_eligible else 0
-    esi = math.ceil(adjusted_gross_for_epf_esi * 0.0075)
+    esi = math.ceil(adjusted_gross_for_epf_esi * 0.0075) if esi_eligible else 0
 
     # ----------------------------
     # Step 5: Manual Deductions (sum of provided deduction fields)
