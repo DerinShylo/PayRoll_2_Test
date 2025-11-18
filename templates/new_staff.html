@@ -87,12 +87,23 @@
                class="input input-bordered w-full" placeholder="Enter PF Number">
       </div>
 
-      <!-- ESI Number (unchanged) -->
+      <!-- ESI Eligible? -->
       <div class="form-control">
-        <label class="label"><span class="label-text">ESI Number (optional)</span></label>
-        <input type="text" name="esi_number"
-               class="input input-bordered w-full">
+        <label class="label"><span class="label-text">Eligible for ESI?</span></label>
+        <select name="esi_eligible" id="esiEligible"
+                class="select select-bordered w-full" required>
+          <option value="No" selected>No</option>
+          <option value="Yes">Yes</option>
+        </select>
       </div>
+
+      <!-- ESI Number (hidden unless Yes) -->
+      <div class="form-control hidden" id="esiField">
+        <label class="label"><span class="label-text">ESI Number</span></label>
+        <input type="text" name="esi_number"
+              class="input input-bordered w-full" placeholder="Enter ESI Number">
+      </div>
+
 
       <!-- Bank Account -->
       <div class="form-control">
@@ -144,6 +155,21 @@ epfSelect.addEventListener("change", () => {
         pfField.classList.add("hidden");
     }
 });
+
+/* ----------------------------
+   ESI ELIGIBLE? → ESI Field
+-----------------------------*/
+const esiSelect = document.getElementById("esiEligible");
+const esiField = document.getElementById("esiField");
+
+esiSelect.addEventListener("change", () => {
+    if (esiSelect.value === "Yes") {
+        esiField.classList.remove("hidden");
+    } else {
+        esiField.classList.add("hidden");
+    }
+});
+
 </script>
 
 {% endblock %}
