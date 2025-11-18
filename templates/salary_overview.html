@@ -70,7 +70,6 @@
             <th>Designation</th>
             <th>Base Pay (₹)</th>
             <th>LOP Days</th>
-            <th>LOP/Day (₹)</th>
             <th>LOP Amount (₹)</th>
             <th>EPF (₹)</th>
             <th>ESI (₹)</th>
@@ -80,6 +79,7 @@
             <th>Uniform (₹)</th>
             <th>CD (₹)</th>
             <th>Hostel (₹)</th>
+            <th>Suspense</th>
             <th>Misc (₹)</th>
             <th>Total Deductions (₹)</th>
             <th>Reimbursements (₹)</th>
@@ -98,7 +98,6 @@
             <td>{{ r.staff_ref.designation }}</td>
             <td>{{ "%.2f"|format(r.gross_salary) }}</td>
             <td>{{ r.lop_days }}</td>
-            <td>{{ "%.2f"|format(lop_per_day) }}</td>
             <td>{{ "%.2f"|format(r.lop_amount) }}</td>
             <td>{{ "%.2f"|format(r.epf) }}</td>
             <td>{{ "%.2f"|format(r.esi) }}</td>
@@ -108,6 +107,7 @@
             <td>{{ "%.2f"|format(r.uniform or 0) }}</td>
             <td>{{ "%.2f"|format(r.cd or 0) }}</td>
             <td>{{ "%.2f"|format(r.hostel or 0) }}</td>
+            <td>{{ "%.2f"|format(r.suspense or 0) }}</td>
             <td>{{ "%.2f"|format(r.misc or 0) }}</td>
             <td>{{ "%.2f"|format(r.total_deductions) }}</td>
             <td>{{ "%.2f"|format(r.total_reimbursements) }}</td>
